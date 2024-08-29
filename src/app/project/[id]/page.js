@@ -47,6 +47,7 @@ const fetchProjectData = (id) => {
     website: 'https://solana-defi-aggregator.io',
   };
 };
+export const runtime = 'edge';
 
 const ProjectDetailPage = () => {
   const { id } = useParams();

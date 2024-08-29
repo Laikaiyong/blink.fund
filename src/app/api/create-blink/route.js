@@ -6,6 +6,8 @@ import {
   ActionPostRequest,
 } from "@solana/actions";
 
+export const runtime = 'edge';
+
 export async function POST(req) {
     const body = await req.json(); 
       
