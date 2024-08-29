@@ -1,4 +1,4 @@
-import { worldMill } from "@react-jvectormap/world";
+import worldMill from '@react-jvectormap/world/worldMill.json';
 
 import dynamic from 'next/dynamic';
 
