@@ -6,7 +6,7 @@ import {
   ActionPostRequest,
 } from "@solana/actions";
 
-export const POST = async (req) => {
+export async function POST(req) {
     const body = await req.json(); 
       
     // insert transaction logic here

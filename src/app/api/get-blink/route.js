@@ -6,7 +6,7 @@ import {
     ActionPostRequest,
   } from "@solana/actions";
   
-  export const GET = async () => {
+  export async function GET() {
         const transaction = {};
       // insert transaction logic here
       const headers = {
