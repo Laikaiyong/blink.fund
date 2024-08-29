@@ -8,7 +8,6 @@ import {
 } from "@solana/wallet-adapter-react";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import {
-  UnsafeBurnerWalletAdapter,
   SkyWalletAdapter,
   MathWalletAdapter,
   NekoWalletAdapter,
@@ -69,7 +68,6 @@ export const WalletProviders = ({
        * instantiate its legacy wallet adapter here. Common legacy adapters can be found
        * in the npm package `@solana/wallet-adapter-wallets`.
        */
-      new UnsafeBurnerWalletAdapter(),
       new SkyWalletAdapter(),
       new MathWalletAdapter(),
       new NekoWalletAdapter(),

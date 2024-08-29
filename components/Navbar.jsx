@@ -12,7 +12,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
-export function NavbarWithSimpleLinks() {
+export default function NavbarWithSimpleLinks() {
 
   return (
     <Navbar className="sticky inset-0 z-10 h-max max-w-full rounded-none py-2 px-4 lg:px-8 lg:py-4 bg-[#211e2b] border-0" fullWidth>
@@ -38,5 +38,3 @@ export function NavbarWithSimpleLinks() {
   </Navbar>
   );
 }
-
-export default NavbarWithSimpleLinks;

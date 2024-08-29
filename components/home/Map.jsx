@@ -1,58 +1,53 @@
-'use client';
+import { worldMill } from "@react-jvectormap/world";
 
-import React from 'react';
-// react plugin for creating vector maps
-import { VectorMap } from "react-jvectormap";
+import dynamic from 'next/dynamic';
 
-var mapData = {
-  AU: 760,
-  BR: 550,
-  CA: 120,
-  DE: 1300,
-  FR: 540,
-  GB: 690,
-  GE: 200,
-  IN: 200,
-  RO: 600,
-  RU: 300,
-  US: 2920
-};
+const VectorMap = dynamic(
+  () => import("@react-jvectormap/core").then((m) => m.VectorMap),
+  { ssr: false, }
+);
 
-const regionStyle = {
-  initial: {
-    fill: "#e4e4e4",
-    "fill-opacity": 0.9,
-    stroke: "none",
-    "stroke-width": 0,
-    "stroke-opacity": 0
-  }
-};
 
-const series = {
-  regions: [
-    {
-      values: mapData,
-      scale: ["#AAAAAA", "#444444"],
-      normalizeFunction: "polynomial"
-    }
-  ]
-}
-
-const containerStyle = {
-  width: "75%",
-  height: "420px"
-};
-
-export default function VectorMaps(){
-  return (
+export default function CustomMap() {
+    const mapData = {
+      US: 1000,
+      IN: 750,
+      GB: 1000,
+      CN: 1500,
+      JP: 1300,
+      DE: 1100,
+    };
+    return (
     <VectorMap
-      map={"world_mill"}
+      map={worldMill}
+      markers={mapData}
       backgroundColor="transparent"
-      zoomOnScroll={false}
-      containerStyle={containerStyle}
+      containerStyle={{
+        width: "100%",
+        height: "100%",
+      }}
       containerClassName="map"
-      regionStyle={regionStyle}
-      series={series}
+      onRegionTipShow={function regionsTooltipHandler(_, label, code) {
+        return label.html(`
+                        <div style="background-color: ${
+                          "#f3f4f6"
+                        }; color: ${
+          "#000000"
+        }; padding: 10px; border-radius: 4px;">
+                          <strong>${label.html()}</strong><br/>
+                          Funding: $${mapData[code] || 0}
+                        </div>
+                      `);
+      }}
+      series={{
+        regions: [
+          {
+            values: mapData,
+            scale: ["#AB9EF2", "#512DA8"],
+            normalizeFunction: "polynomial",
+          },
+        ],
+      }}
     />
   );
 }
