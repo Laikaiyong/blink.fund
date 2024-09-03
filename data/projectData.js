@@ -51,7 +51,7 @@ export const projectsData = [
       id: "5",
       name: "Sol-Healthy",
       description: "A blockchain-based healthcare platform ensuring transparency and security in medical data exchanges.",
-      image: "/solhealthy.png",
+      image: "https://sol-healthy.vercel.app/solhealthy.png",
       raised: 25000,
       contributors: 400,
       daysLeft: 5,
