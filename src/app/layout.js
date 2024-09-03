@@ -6,18 +6,18 @@ import Sidebar from "../../components/Sidebar";
 export const metadata = {
   title: "Blink.Fund",
   description: "Quadratic Funding with Blink Sharable",
-  metadataBase: new URL('https://blink-fund.pages.dev/'),
+  metadataBase: new URL('https://blink-fund.vercel.app/'),
   openGraph: {
 		title: "Blink.Fund",
-		description: "Solving Food Waste Issues to Pet Food Manufacturing with Blockchain",
-		images: ["/haiwanlab.jpg"],
+		description: "Quadratic Funding with Blink Sharable",
+		images: ["/logo.png"],
 	},
 	twitter: {
 		card: "summary",
 		site: "Blink.Fund",
 		title: "Blink.Fund",
-		description: "Solving Food Waste Issues to Pet Food Manufacturing with Blockchain",
-		images: ["/haiwanlab.jpg"],
+		description: "Suadratic Funding with Blink Sharable",
+		images: ["/logo.png"],
 	},
 };
 
