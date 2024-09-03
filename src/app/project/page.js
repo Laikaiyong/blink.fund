@@ -14,37 +14,26 @@ import {
   UsersIcon,
   ClockIcon,
 } from "@heroicons/react/24/solid";
-
+import { projectsData } from "../../../data/projectData";
 
 export default function Project() {
-  const projects = [
-    { 
-      name: 'Solana DEX Aggregator', 
-      description: 'A decentralized exchange aggregator built on Solana for optimal trading routes and liquidity.',
-      image: './logo.png',
-      raised: 15000,
-      contributors: 250,
-      daysLeft: 7
-    },
-    { 
-      name: 'NFT Marketplace', 
-      description: 'A user-friendly NFT marketplace showcasing unique digital assets on the Solana blockchain.',
-      image: './logo.png',
-      raised: 30000,
-      contributors: 500,
-      daysLeft: 5
-    }
-  ];
-  
+  const projects = projectsData.filter(project => project.myProject);
 
   return (
         <main className="flex-1 p-4">
           <div className="mb-6">
-            <Typography variant="h4" color="white" className="mb-4">
+            <div className="flex flex-row">
+
+            <Typography variant="h4" color="white" className="mb-4 flex-1">
               My Projects
             </Typography>
+            <Button className="bg-[#512DA8]">
+                Add Project
+            </Button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((project, index) => (
+                 <a href={`/project/${project.id}`}>
                 <Card key={index} className="bg-[#211e2b]">
                   <img
                     src={project.image}
@@ -61,11 +50,8 @@ export default function Project() {
                     <div className="flex justify-between items-center mb-2">
                       <Typography color="white">Raised:</Typography>
                       <Typography color="white" className="font-bold">
-                        ${project.raised.toLocaleString()}
+                        USDC{project.raised.toLocaleString()}
                       </Typography>
-                    </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2.5">
-                      <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: `${(project.raised / 50000) * 100}%` }}></div>
                     </div>
                   </CardBody>
                   <CardFooter className="pt-0 flex justify-between">
@@ -77,6 +63,7 @@ export default function Project() {
                     </Typography>
                   </CardFooter>
                 </Card>
+                </a>
               ))}
             </div>
           </div>

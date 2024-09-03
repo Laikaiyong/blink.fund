@@ -16,59 +16,16 @@ import {
 } from "@heroicons/react/24/solid";
 import CustomMap from '../../components/home/Map';
 import CustomLineChart from '../../components/home/LineChart';
-
+import { projectsData } from "../../data/projectData";
+import { createBlink } from "./lib/utils";
 
 export default function Dashboard() {
-  const projects = [
-    { 
-      name: 'Solana DEX Aggregator', 
-      description: 'A decentralized exchange aggregator built on Solana for optimal trading routes and liquidity.',
-      image: './logo.png',
-      raised: 15000,
-      contributors: 250,
-      daysLeft: 7
-    },
-    { 
-      name: 'NFT Marketplace', 
-      description: 'A user-friendly NFT marketplace showcasing unique digital assets on the Solana blockchain.',
-      image: './logo.png',
-      raised: 30000,
-      contributors: 500,
-      daysLeft: 5
-    },
-    { 
-      name: 'DeFi Lending Protocol', 
-      description: 'An innovative DeFi lending platform leveraging Solana\'s speed for efficient borrowing and lending.',
-      image: './logo.png',
-      raised: 25000,
-      contributors: 300,
-      daysLeft: 10
-    },
-    { 
-      name: 'Cross-chain Bridge', 
-      description: 'A secure bridge connecting Solana with other major blockchains for seamless asset transfers.',
-      image: './logo.png',
-      raised: 40000,
-      contributors: 700,
-      daysLeft: 3
-    },
-    { 
-      name: 'DAO Governance Tool', 
-      description: 'A comprehensive DAO management and voting system built on Solana for decentralized decision-making.',
-      image: './logo.png',
-      raised: 10000,
-      contributors: 150,
-      daysLeft: 14
-    },
-  ];
-  
-
-
+  const projects = projectsData;
 
   return (
         <main className="flex-1 p-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <Card className="bg-gray-800">
+            <Card className="bg-[#211e2b]">
               <CardBody>
                 <Typography variant="h5" color="white" className="mb-4">
                   Funding Over Time
@@ -76,7 +33,7 @@ export default function Dashboard() {
                 <CustomLineChart />
               </CardBody>
             </Card>
-            <Card className="bg-gray-800">
+            <Card className="bg-[#211e2b]">
               <CardBody>
                 <Typography variant="h5" color="white" className="mb-4">
                   Global Contributions
@@ -93,6 +50,8 @@ export default function Dashboard() {
             </Typography>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((project, index) => (
+                <a href={`/project/${project.id}`}>
+
                 <Card key={index} className="bg-[#211e2b]">
                   <img
                     src={project.image}
@@ -109,11 +68,8 @@ export default function Dashboard() {
                     <div className="flex justify-between items-center mb-2">
                       <Typography color="white">Raised:</Typography>
                       <Typography color="white" className="font-bold">
-                        ${project.raised.toLocaleString()}
+                        USDC{project.raised.toLocaleString()}
                       </Typography>
-                    </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2.5">
-                      <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: `${(project.raised / 50000) * 100}%` }}></div>
                     </div>
                   </CardBody>
                   <CardFooter className="pt-0 flex justify-between">
@@ -125,6 +81,7 @@ export default function Dashboard() {
                     </Typography>
                   </CardFooter>
                 </Card>
+                </a>
               ))}
             </div>
           </div>

@@ -56,7 +56,7 @@ export default function Sidebar() {
             </Typography>
           </div>
           <Typography variant="h4" color="white">
-            $120,000
+            120,000 USDC
           </Typography>
         </CardBody>
       </Card>
@@ -69,7 +69,7 @@ export default function Sidebar() {
             </Typography>
           </div>
           <Typography variant="h4" color="white">
-            $50,000
+            50,000 USDC
           </Typography>
         </CardBody>
       </Card>

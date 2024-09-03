@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, {useState} from 'react';
+import { useParams, } from 'react-router-dom';
+import { usePathname } from 'next/navigation';
 import {
   Typography,
   Button,
@@ -9,99 +10,189 @@ import {
   CardBody,
   CardFooter,
 } from "@material-tailwind/react";
+import { Col, message, Row } from "antd";
+import { projectsData } from "../../../../data/projectData";
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import Image from "next/image";
+import FetchBlink from '../../../../components/FetchBlink';
+import { createBlink } from '@/app/lib/utils';
+import { clusterApiUrl, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL, Connection } from '@solana/web3.js';
+import { sendAndConfirmTransaction } from '@solana/web3.js';
 
 // Mock function to fetch project data
 const fetchProjectData = (id) => {
   // In a real application, this would fetch data from an API or blockchain
-  return {
-    id,
-    name: 'Solana DeFi Aggregator',
-    description: 'A decentralized platform aggregating various DeFi protocols on Solana for optimized yields and trading.',
-    imageUrl: '/api/placeholder/800/400',
-    fundingGoal: 50000,
-    currentFunding: 35000,
-    contributor_count: 156,
-    days_left: 7,
-    long_description: `
-      Our Solana DeFi Aggregator aims to simplify and optimize the DeFi experience on the Solana blockchain. 
-      By aggregating multiple protocols, we provide users with the best rates, lowest fees, and highest yields across the ecosystem.
-      
-      Key Features:
-      - One-click yield farming
-      - Cross-protocol swaps
-      - Liquidity pool optimization
-      - Real-time analytics and performance tracking
-      
-      Funds raised will be used for:
-      - Smart contract development and audits
-      - UI/UX improvements
-      - Marketing and community building
-      - Integration of additional protocols
-    `,
-    team: [
-      { name: 'Alice Johnson', role: 'Lead Developer' },
-      { name: 'Bob Smith', role: 'Smart Contract Specialist' },
-      { name: 'Carol Williams', role: 'UI/UX Designer' },
-    ],
-    github: 'https://github.com/solana-defi-aggregator',
-    website: 'https://solana-defi-aggregator.io',
-  };
+  return projectsData.find(val => val.id == id);
 };
 export const runtime = 'edge';
 
 const ProjectDetailPage = () => {
-  const { id } = useParams();
-  const project = fetchProjectData(id);
+  const [messageApi, contextHolder] = message.useMessage();
+  const path = usePathname();
+  const pathSplitted = path.split("/");
+  const project = fetchProjectData(pathSplitted[pathSplitted.length - 1]);
+
+  const [amount, setAmount] = useState('');
+  const [actionDetails, setActionDetails] = useState(null);
+  const wallet = useWallet();
+  const {connection} = useConnection();
+
+  const handleSolanaTransaction = async (amount = 0.0001, recipient = "DnhmBBGMiKLtG2gj5VCq4TPmgFT9dwDxDoUPAmrSNWqa") => {
+    if (!wallet.publicKey) {
+      alert('Please connect your wallet first!');
+      return;
+    }
+
+    try {
+      const transaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: wallet.publicKey,
+          toPubkey: recipient,
+          lamports: 0.0001 * LAMPORTS_PER_SOL,
+        })
+      );
+
+      const signature = await wallet.sendTransaction(transaction, connection);
+      await connection.confirmTransaction(signature, 'processed');
+      alert(`Transaction successful! Signature: ${signature}`);
+    } catch (error) {
+      console.error('Error processing Solana transaction:', error);
+      alert(`Transaction failed: ${error.message}`);
+    }
+  };
+
+  async function getActionDetails(toPubkey, title, image, description) {
+    const response = await fetch(`/api/actions?to=${toPubkey}`, {
+      method: 'GET',
+    });
+  
+    if (!response.ok) {
+      throw new Error('Failed to fetch action details');
+    }
+  
+    return response.json();
+  }
+
+  async function executeAction(toPubkey, amount, account) {
+    const response = await fetch(`/api/actions?to=${toPubkey}&amount=${amount}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ account }),
+    });
+  
+    if (!response.ok) {
+      throw new Error('Failed to execute action');
+    }
+  
+    return response.json();
+  }
+
+  async function handleGetAction() {
+    try {
+      // const details = await getActionDetails(
+      //   'DYVT2LQ6U7PERSYgBLWDkrruhJxpTrWdK55yeVJqfg1c',
+      //   project.name,
+      //   project.image,
+      //   project.description
+      // );
+      let response = await createBlink(
+        new Connection(clusterApiUrl("devnet")),
+        wallet,
+        project.name,
+        project.image,
+        project.description,
+        'DnhmBBGMiKLtG2gj5VCq4TPmgFT9dwDxDoUPAmrSNWqa',
+        // 'DYVT2LQ6U7PERSYgBLWDkrruhJxpTrWdK55yeVJqfg1c'
+        []
+      );
+
+      console.log(response)
+      if (response.status === "success") {
+        messageApi.open({
+          type: "success",
+          content: "Blink created successfully",
+        });
+        setTimeout(() => {
+          router.refresh();
+        }, 500);
+      } else {
+        console.log("Error creating blink", response);
+        messageApi.open({
+          type: "error",
+          content: "Error creating blink",
+        });
+      }
+  
+      // setActionDetails(details);
+    } catch (error) {
+      console.error('Error fetching action details:', error);
+    }
+  }
+
+  async function handleExecuteAction() {
+    if (!wallet.publicKey.toString()) {
+      alert('Please connect your wallet first');
+      return;
+    }
+
+    try {
+      const result = await executeAction(
+        // 'DnhmBBGMiKLtG2gj5VCq4TPmgFT9dwDxDoUPAmrSNWqa',
+        'DYVT2LQ6U7PERSYgBLWDkrruhJxpTrWdK55yeVJqfg1c',
+        amount,
+        wallet.publicKey.toString()
+      );
+      console.log('Action executed:', result);
+      
+      // Here you would typically sign and send the transaction
+      // This depends on your wallet adapter setup
+      if (result.transaction) {
+        const signedTx = await wallet.signTransaction(result.transaction);
+        // Send the signed transaction to the network
+        // This step depends on how you're set up to interact with the Solana network
+      }
+    } catch (error) {
+      console.error('Error executing action:', error);
+    }
+  }
+
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
 
       <main className="container mx-auto px-4 py-8">
-        <Card className="bg-gray-800 text-white">
+        <Card className="bg-[#211e2b] text-white">
           <CardBody>
-            <img src={project.imageUrl} alt={project.name} className="w-full h-64 object-cover rounded-lg mb-6" />
+            <img src={project.image} alt={project.name} className="w-full h-64 object-cover rounded-lg mb-6" />
             <Typography variant="h2" className="mb-4">{project.name}</Typography>
             <Typography className="mb-6 text-gray-400">{project.description}</Typography>
             
             <div className="mb-6">
               <div className="flex justify-between text-sm mb-2">
-                <span>{project.contributor_count} contributors</span>
-                <span>{project.days_left} days left</span>
+                <Typography>{project.contributor_count} contributors</Typography>
+                <Typography>{project.daysLeft} days left</Typography>
               </div>
-              <div className="bg-gray-700 rounded-full h-2">
-                <div
-                  className="bg-blue-500 h-2 rounded-full"
-                  style={{ width: `${(project.currentFunding / project.fundingGoal) * 100}%` }}
-                ></div>
-              </div>
-              <div className="mt-2 flex justify-between text-sm">
+              {/* <div className="mt-2 flex justify-between text-sm">
                 <span>{((project.currentFunding / project.fundingGoal) * 100).toFixed(2)}% funded</span>
                 <span>${project.currentFunding.toLocaleString()} / ${project.fundingGoal.toLocaleString()}</span>
-              </div>
+              </div> */}
             </div>
 
             <Typography variant="h4" className="mb-4">About the Project</Typography>
-            <Typography className="mb-6 whitespace-pre-line">{project.long_description}</Typography>
+            <Typography className="mb-6 whitespace-pre-line">{project.description}</Typography>
 
-            <Typography variant="h4" className="mb-4">Team</Typography>
-            <ul className="list-disc list-inside mb-6">
-              {project.team.map((member, index) => (
-                <li key={index}>{member.name} - {member.role}</li>
-              ))}
-            </ul>
-
-            <Typography variant="h4" className="mb-4">Links</Typography>
-            <div className="flex space-x-4">
-              <a href={project.github} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">GitHub</a>
-              <a href={project.website} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">Website</a>
-            </div>
           </CardBody>
           <CardFooter className="pt-0">
-            <Button color="blue" fullWidth>
+            <Button onClick={handleSolanaTransaction} color="blue" fullWidth>
               Contribute to this Project
             </Button>
+            <Button onClick={handleGetAction}>Create Blink to Share</Button>
           </CardFooter>
         </Card>
+
+          <FetchBlink />
       </main>
     </div>
   );

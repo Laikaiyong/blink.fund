@@ -16,6 +16,7 @@ export default function CustomMap() {
       CN: 1500,
       JP: 1300,
       DE: 1100,
+      MY: 2000,
     };
     return (
     <VectorMap

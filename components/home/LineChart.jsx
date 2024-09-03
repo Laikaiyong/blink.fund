@@ -11,12 +11,12 @@ import {
 } from "recharts";
 
 const chartData = [
-  { name: "Jan", DAI: 4000 },
-  { name: "Feb", DAI: 3000 },
-  { name: "Mar", DAI: 5000 },
-  { name: "Apr", DAI: 4500 },
-  { name: "May", DAI: 6000 },
-  { name: "Jun", DAI: 5500 },
+  { name: "Jan", USDC: 4000 },
+  { name: "Feb", USDC: 3000 },
+  { name: "Mar", USDC: 5000 },
+  { name: "Apr", USDC: 4500 },
+  { name: "May", USDC: 6000 },
+  { name: "Jun", USDC: 5500 },
 ];
 
 export default function CustomLineChart() {
@@ -33,7 +33,7 @@ export default function CustomLineChart() {
             color: "#fff",
           }}
         />
-        <Line type="monotone" dataKey="DAI" stroke="#AB9EF2" strokeWidth={2} />
+        <Line type="monotone" dataKey="USDC" stroke="#AB9EF2" strokeWidth={2} />
       </LineChart>
     </ResponsiveContainer>
   );

@@ -7,6 +7,11 @@ const nextConfig = {
         hostname: "www.material-tailwind.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "miro.medium.com",
+        port: "",
+      },
     ],
   },
 };
