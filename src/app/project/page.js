@@ -33,8 +33,8 @@ export default function Project() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((project, index) => (
-                 <a href={`/project/${project.id}`}>
-                <Card key={index} className="bg-[#211e2b]">
+                 <a key={index} href={`/project/${project.id}`}>
+                <Card  className="bg-[#211e2b]">
                   <img
                     src={project.image}
                     alt={project.name}
