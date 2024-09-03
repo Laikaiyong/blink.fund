@@ -27,8 +27,6 @@ import {
 } from "@solana/spl-token";
 import { projectsData } from "../../../../data/projectData";
 
-export const runtime = 'edge';
-
 // Create the standard headers for this route (including CORS)
 const headers = createActionHeaders();
 
