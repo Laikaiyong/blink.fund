@@ -2,6 +2,7 @@
 
 import React, {useState} from 'react';
 import { useParams, } from 'react-router-dom';
+
 import { usePathname } from 'next/navigation';
 import {
   Typography,
@@ -18,6 +19,7 @@ import FetchBlink from '../../../../components/FetchBlink';
 import { createBlink } from '@/app/lib/utils';
 import { clusterApiUrl, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL, Connection } from '@solana/web3.js';
 import { sendAndConfirmTransaction } from '@solana/web3.js';
+import { useRouter } from "next/navigation";
 
 // Mock function to fetch project data
 const fetchProjectData = (id) => {
@@ -31,6 +33,7 @@ const ProjectDetailPage = () => {
   const path = usePathname();
   const pathSplitted = path.split("/");
   const project = fetchProjectData(pathSplitted[pathSplitted.length - 1]);
+  const router = useRouter();
 
   const [amount, setAmount] = useState('');
   const [actionDetails, setActionDetails] = useState(null);
