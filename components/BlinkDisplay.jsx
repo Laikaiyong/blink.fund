@@ -49,7 +49,7 @@ const BlinkDisplay = ({
         <div className="flex flex-col p-5 text-start text-white">
           <div className="mb-2 flex items-center gap-2">
             <span className="inline-flex items-center truncate text-subtext text-purple-accent">
-              https://blink-fund.pages.dev/
+              https://blink-fund.vercel.app/
             </span>
             <a
               href="https://docs.dialect.to/documentation/actions/security"
