@@ -1,5 +1,7 @@
 export const projectsData = [
     {
+
+        // Change to relevant data and attributes as well to display on frontend
       id: "0x6d09179e8f4c1dfeeb4cee0d44fb44d5aa8b1830f384551c4a81e2b5f8e0f8b8",
       name: "Solana DEX Aggregator",
       description: "A decentralized exchange aggregator built on Solana for optimal trading routes and liquidity.",

@@ -8,10 +8,44 @@ import {
   CurrencyDollarIcon,
   ClockIcon,
   UsersIcon,
+  HomeIcon,
+  DocumentCurrencyPoundIcon,
+    ArrowsRightLeftIcon
 } from "@heroicons/react/24/outline";
+
 
 export default function Sidebar() {
   return (
+    <>
+<nav className="grid gap-4 p-4 grid-cols-2 md:grid-cols-1">
+<a href="/" className="bg-[#2c2938] hover:bg-[#3d3a4f] transition-colors duration-300">
+                {/* Home */}
+                <div className="flex">
+                    <HomeIcon className="h-6 w-6 mr-4 text-white mb-2" />
+                    <Typography variant="h6" color="white" className="mb-1">
+                        Home
+                    </Typography>
+                </div>
+            </a>
+            <a href="/project" className="bg-[#2c2938] hover:bg-[#3d3a4f] transition-colors duration-300">
+                {/* Project */}
+                <div className="flex">
+                    <DocumentCurrencyPoundIcon className="h-6 w-6 mr-4 text-white mb-2"  />
+                    <Typography variant="h6" color="white" className="mb-1">
+                        Project
+                    </Typography>
+                </div>
+            </a>
+            <a href="/swap" className="bg-[#2c2938] hover:bg-[#3d3a4f] transition-colors duration-300">
+                {/* Swap */}
+                <div className="flex">
+                    <ArrowsRightLeftIcon className="h-6 w-6 mr-4 text-white mb-2" />
+                    <Typography variant="h6" color="white" className="mb-1">
+                        Swap
+                    </Typography>
+                </div>
+            </a>
+    </nav>
     <div className="grid gap-4 p-4 grid-cols-2 md:grid-cols-1">
       <Card className="bg-[#2c2938]">
         <CardBody className="p-4">
@@ -66,5 +100,6 @@ export default function Sidebar() {
         </CardBody>
       </Card>
     </div>
+    </>
   );
 }
