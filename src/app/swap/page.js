@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
@@ -35,7 +35,9 @@ const SwapInterface = () => {
 
   const fetchTokens = async () => {
     try {
-      const response = await fetch("https://tokens.jup.ag/tokens?tags=verified");
+      const response = await fetch(
+        "https://tokens.jup.ag/tokens?tags=verified"
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -121,26 +123,26 @@ const SwapInterface = () => {
           <Typography variant="h4" color="white" className="mb-4">
             Swap Tokens
           </Typography>
-      <TokenListModal
-        handleSwap={handleSwap}
-        isLoading={isLoading}
-        tokens={tokens}
-        isOpen={isOpen}
-        inputAmount={inputAmount}
-        setInputAmount={setInputAmount}
-        outputAmount={outputAmount}
-        toggleModal={() => setIsOpen(false)}
-        selectedTokens={selectedTokens}
-        setSelectedTokens={setSelectedTokens}
-        modalSelectToken={(token) => {
-          setSelectedTokens((old) => {
-            let newTokens = [token, old[1]];
-            if (old.length === 3) newTokens = newTokens.reverse();
-            return newTokens;
-          });
-          setIsOpen(false);
-        }}
-      />
+          <TokenListModal
+            handleSwap={handleSwap}
+            isLoading={isLoading}
+            tokens={tokens}
+            isOpen={isOpen}
+            inputAmount={inputAmount}
+            setInputAmount={setInputAmount}
+            outputAmount={outputAmount}
+            toggleModal={() => setIsOpen(false)}
+            selectedTokens={selectedTokens}
+            setSelectedTokens={setSelectedTokens}
+            modalSelectToken={(token) => {
+              setSelectedTokens((old) => {
+                let newTokens = [token, old[1]];
+                if (old.length === 3) newTokens = newTokens.reverse();
+                return newTokens;
+              });
+              setIsOpen(false);
+            }}
+          />
           {/* <Card className="bg-[#211e2b]">
             <CardBody>
               <Typography variant="h5" color="white" className="mb-4">
@@ -217,13 +219,14 @@ const SwapInterface = () => {
         </div>
         <div className="flex items-center justify-between mt-6 pl-4">
           <Typography variant="h6" color="white">
-            Powered by 
-            <img 
-              src="/jupiter.png"
-              href="https://jup.ag"
-              alt="Jupiter" 
-              className="h-6 w-6 inline ml-2" 
-            />
+            Powered by
+            <a target="_blank" href="https://jup.ag">
+              <img
+                src="/jupiter.png"
+                alt="Jupiter"
+                className="h-6 w-6 inline ml-2"
+              />
+            </a>
           </Typography>
         </div>
       </main>
