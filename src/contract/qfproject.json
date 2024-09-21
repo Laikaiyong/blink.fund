@@ -1,0 +1,144 @@
+{
+  "version": "0.1.0",
+  "name": "qfproject",
+  "instructions": [
+    {
+      "name": "initialize",
+      "accounts": [
+        {
+          "name": "projectCounter",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createProject",
+      "accounts": [
+        {
+          "name": "project",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "projectCounter",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "fundingGoal",
+          "type": "u64"
+        },
+        {
+          "name": "imageUrl",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "fundProject",
+      "accounts": [
+        {
+          "name": "project",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "funder",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Project",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "fundingGoal",
+            "type": "u64"
+          },
+          {
+            "name": "currentFunding",
+            "type": "u64"
+          },
+          {
+            "name": "index",
+            "type": "u64"
+          },
+          {
+            "name": "imageUrl",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProjectCounter",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "count",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "address": "2oxcz5VZPS9pycJTCrLYDbQYw78k4RDnYUGosBU6bgzJ"
+  }
+}

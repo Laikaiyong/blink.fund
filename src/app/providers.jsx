@@ -17,17 +17,19 @@ import {
   WalletMultiButton,
 } from "@solana/wallet-adapter-react-ui";
 import { clusterApiUrl } from "@solana/web3.js";
+import { NetworkProvider, useNetwork } from "./network-context";
+
 
 // Default styles that can be overridden by your app
 import "@solana/wallet-adapter-react-ui/styles.css";
 
-export const WalletProviders = ({ children }) => {
+const WalletProviders = ({ children }) => {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
-  const network = WalletAdapterNetwork.Devnet;
-
+  const { network } = useNetwork();
   // You can also provide a custom RPC endpoint.
-  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-
+  const endpoint =
+  useMemo(() => network == WalletAdapterNetwork.Mainnet
+  ? process.env.NEXT_PUBLIC_MAINNET : clusterApiUrl(network), [network]);
   const wallets = useMemo(
     () => [
       /**
@@ -60,5 +62,14 @@ export const WalletProviders = ({ children }) => {
         </WalletProvider>
       </ConnectionProvider>
     </ThemeProvider>
+  );
+};
+
+
+export const Providers = ({ children }) => {
+  return (
+    <NetworkProvider>
+      <WalletProviders>{children}</WalletProviders>
+    </NetworkProvider>
   );
 };

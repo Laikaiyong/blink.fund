@@ -1,5 +1,5 @@
 import "./globals.css";
-import { WalletProviders } from "./providers";
+import { Providers } from "./providers";
 import NavbarWithSimpleLinks from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
 
@@ -24,7 +24,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <WalletProviders>
+      <Providers>
         <body className="bg-[#191623] text-white">
         <div className="min-h-screen bg-[#191623] text-white">
           <NavbarWithSimpleLinks />
@@ -36,7 +36,7 @@ export default function RootLayout({ children }) {
         </div>
         </div>
         </body>
-      </WalletProviders>
+      </Providers>
     </html>
   );
 }

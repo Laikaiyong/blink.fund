@@ -1,50 +1,67 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
-import { PublicKey } from "@solana/web3.js";
 import {
   Typography,
   Button,
   Card,
   CardBody,
-  CardFooter,
-  Select,
-  Option,
-  CardHeader,
   Input,
 } from "@material-tailwind/react";
+import TokenListModal from "./TokenListModal";
 
-export default function Swap() {
+const SwapInterface = () => {
   const { publicKey, signTransaction } = useWallet();
   const [balance, setBalance] = useState(0);
   const [inputAmount, setInputAmount] = useState("");
   const [outputAmount, setOutputAmount] = useState("");
-  const [inputToken, setInputToken] = useState("SOL");
-  const [outputToken, setOutputToken] = useState("USDC");
+  const [selectedTokens, setSelectedTokens] = useState(["SOL", "USDC"]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [tokens, setTokens] = useState([]);
   const { connection } = useConnection();
 
   useEffect(() => {
-    if (publicKey) {
-      fetchBalance();
-    }
-  }, [publicKey, connection]);
+    fetchTokens();
+  }, []);
 
   const fetchBalance = async () => {
-    const balance = await connection.getBalance(publicKey);
-    setBalance(balance / 1e9); // Convert lamports to SOL
+    if (publicKey) {
+      const balance = await connection.getBalance(publicKey);
+      setBalance(balance / 1e9); // Convert lamports to SOL
+    }
+  };
+
+  const fetchTokens = async () => {
+    try {
+      const response = await fetch("https://tokens.jup.ag/tokens?tags=verified");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const allTokens = await response.json();
+      setTokens(allTokens);
+    } catch (error) {
+      console.error("Error fetching tokens:", error);
+    }
   };
 
   const handleSwap = async () => {
     setIsLoading(true);
     try {
-      const inputMint = "So11111111111111111111111111111111111111112"; // SOL mint address
-      const outputMint =
-        connection.rpcEndpoint == "https://api.devnet.solana.com"
-          ? "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
-          : "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"; // USDC mint address
-      const amount = inputAmount * 1e9; // Convert to lamports
+      // Fetch balance before proceeding with the swap
+      await fetchBalance();
+
+      const inputToken = tokens.find((t) => t.symbol === selectedTokens[0]);
+      const outputToken = tokens.find((t) => t.symbol === selectedTokens[1]);
+
+      if (!inputToken || !outputToken) {
+        throw new Error("Invalid token selection");
+      }
+
+      const inputMint = inputToken.address;
+      const outputMint = outputToken.address;
+      const amount = Math.floor(inputAmount * 10 ** inputToken.decimals);
 
       // Step 1: Fetch routes
       const routesResponse = await fetch(
@@ -89,7 +106,7 @@ export default function Swap() {
       console.log("Swap executed:", txid);
 
       // Refresh balance after swap
-      fetchBalance();
+      await fetchBalance();
     } catch (error) {
       console.error("Swap failed:", error);
     } finally {
@@ -98,77 +115,120 @@ export default function Swap() {
   };
 
   return (
-    <main className="flex-1 p-4">
-      <div className="mb-6">
-        <Typography variant="h4" color="white" className="mb-4">
-          Swap Tokens
-        </Typography>
-        <Card className="bg-[#211e2b]">
-          <CardBody>
-            <Typography variant="h5" color="white" className="mb-4">
-              Wallet Balance
-            </Typography>
-            <Typography color="white">{balance.toFixed(4)} SOL</Typography>
-          </CardBody>
-        </Card>
+    <>
+      <main className="flex-1 p-4">
+        <div className="mb-6">
+          <Typography variant="h4" color="white" className="mb-4">
+            Swap Tokens
+          </Typography>
+      <TokenListModal
+        handleSwap={handleSwap}
+        isLoading={isLoading}
+        tokens={tokens}
+        isOpen={isOpen}
+        inputAmount={inputAmount}
+        setInputAmount={setInputAmount}
+        outputAmount={outputAmount}
+        toggleModal={() => setIsOpen(false)}
+        selectedTokens={selectedTokens}
+        setSelectedTokens={setSelectedTokens}
+        modalSelectToken={(token) => {
+          setSelectedTokens((old) => {
+            let newTokens = [token, old[1]];
+            if (old.length === 3) newTokens = newTokens.reverse();
+            return newTokens;
+          });
+          setIsOpen(false);
+        }}
+      />
+          {/* <Card className="bg-[#211e2b]">
+            <CardBody>
+              <Typography variant="h5" color="white" className="mb-4">
+                Wallet Balance
+              </Typography>
+              <Typography color="white">{balance.toFixed(4)} SOL</Typography>
+            </CardBody>
+          </Card>
 
-        <Card className="bg-[#211e2b]">
-          <CardBody>
-            <Typography variant="h5" color="white" className="mb-4">
-              Swap
-            </Typography>
-            <div className="space-y-4">
-              <div>
-                <Typography className="block mb-2" color="white">From</Typography>
-                <div className="flex space-x-2">
-                  <Input
-                  color="white"
-                    type="number"
-                    value={inputAmount}
-                    onChange={(e) => setInputAmount(e.target.value)}
-                    placeholder="Amount"
-                    className="flex-grow"
-                  />
-                  <Select
-                  color="white"
-                    label="Select token"
-                    value={inputToken}
-                    onValueChange={setInputToken}
-                    className="text-white">
-                    <Option color="white" value="SOL">SOL</Option>
-                    <Option color="white" value="USDC">USDC</Option>
-                  </Select>
+          <Card className="bg-[#211e2b]">
+            <CardBody>
+              <Typography variant="h5" color="white" className="mb-4">
+                Swap
+              </Typography>
+              <div className="space-y-4">
+                <div>
+                  <Typography className="block mb-2" color="white">
+                    From
+                  </Typography>
+                  <div className="flex space-x-2 items-center">
+                    <Input
+                      color="white"
+                      type="number"
+                      value={inputAmount}
+                      onChange={(e) => setInputAmount(e.target.value)}
+                      placeholder="Amount"
+                      className="flex-grow"
+                    />
+                    <Button
+                      onClick={() => setIsOpen(true)}
+                      className="py-2 px-3 h-10 rounded-xl flex items-center bg-gray-700 text-white"
+                    >
+                      {selectedTokens[0]}
+                    </Button>
+                  </div>
                 </div>
-              </div>
-              <div>
-                <Typography color="white"  className="block mb-2">To</Typography >
-                <div className="flex space-x-2">
-                  <Input
-                  color="white"
-                    type="number"
-                    value={outputAmount}
-                    readOnly
-                    placeholder="Estimated amount"
-                    className="flex-grow"
-                  />
-                  <Select
-                  color="white"
-                    label="Select token"
-                    value={outputToken}
-                    onValueChange={setOutputToken}
-                    className="text-white">
-                    <Option color="white" value="SOL">SOL</Option>
-                    <Option color="white" value="USDC">USDC</Option>
-                  </Select>
+                <div>
+                  <Typography color="white" className="block mb-2">
+                    To
+                  </Typography>
+                  <div className="flex space-x-2 items-center">
+                    <Input
+                      color="white"
+                      type="number"
+                      value={outputAmount}
+                      readOnly
+                      placeholder="Estimated amount"
+                      className="flex-grow"
+                    />
+                    <Button
+                      onClick={() => {
+                        setSelectedTokens((old) => [
+                          ...old.reverse(),
+                          "PLACEHOLDER",
+                        ]);
+                        setIsOpen(true);
+                      }}
+                      className="py-2 px-3 h-10 rounded-xl flex items-center bg-gray-700 text-white"
+                    >
+                      {selectedTokens[1]}
+                    </Button>
+                  </div>
                 </div>
+                <Button
+                  onClick={handleSwap}
+                  className="bg-[#512DA8]"
+                  disabled={isLoading || !inputAmount}
+                >
+                  {isLoading ? "Swapping..." : "Swap"}
+                </Button>
               </div>
-              <Button onClick={handleSwap} className="bg-[#512DA8]" disabled={isLoading || !inputAmount}>
-                {isLoading ? "Swapping..." : "Swap"}
-              </Button>
-            </div>
-          </CardBody>
-        </Card>
-      </div>
-    </main>
+            </CardBody>
+          </Card> */}
+        </div>
+        <div className="flex items-center justify-between mt-6 pl-4">
+          <Typography variant="h6" color="white">
+            Powered by 
+            <img 
+              src="/jupiter.png"
+              href="https://jup.ag"
+              alt="Jupiter" 
+              className="h-6 w-6 inline ml-2" 
+            />
+          </Typography>
+        </div>
+      </main>
+    </>
   );
-}
+};
+
+export default SwapInterface;
