@@ -2,7 +2,7 @@
  * FunBlink Actions Example
  */
 
-import { generateActionsString } from "@/app/lib/utils";
+import { generateActionsString } from "../../lib/utils";
 import idl from "../../../contract/blink.json";
 import { AnchorProvider, Idl, Program } from "@project-serum/anchor";
 

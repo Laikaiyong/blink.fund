@@ -16,7 +16,7 @@ import { projectsData } from "../../../../data/projectData";
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import Image from "next/image";
 import FetchBlink from '../../../../components/FetchBlink';
-import { createBlink } from '@/app/lib/utils';
+import { createBlink } from '../../lib/utils';
 import { clusterApiUrl, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL, Connection } from '@solana/web3.js';
 import { sendAndConfirmTransaction } from '@solana/web3.js';
 import { useRouter } from "next/navigation";
